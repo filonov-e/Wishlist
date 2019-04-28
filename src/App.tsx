@@ -13,6 +13,7 @@ interface State {
 }
 
 interface Item {
+  index: string;
   img_url: string;
   card_title: string;
   card_text: string;
@@ -31,6 +32,7 @@ class App extends React.Component<any, State> {
   
   addItem = () => {
     const item:Item = {
+      index: String(this.state.items.length),
       img_url: this.state.img_url,
       card_title: this.state.card_title,
       card_text: this.state.card_text,
@@ -45,13 +47,29 @@ class App extends React.Component<any, State> {
     });
   }
 
+  deleteItem = (event: any) => {
+    let items = this.state.items;
+    this.setState({
+      items: (() => {
+        items = items.filter((item: Item) => {
+          console.log(item.index);
+          console.log(event.target.parentNode.parentNode.id);
+          return item.index !== event.target.parentNode.parentNode.id
+        });
+        return items
+      })()
+    });
+  }
+
   createItemsJSX = () => {
     return this.state.items.map(
-      (item: any) => <Item 
+      (item: Item) => <Item
+                      index={item.index} 
                       img_url={item.img_url} 
                       card_title={item.card_title} 
                       card_text={item.card_text} 
-                      link_url={item.link_url}/>
+                      link_url={item.link_url}
+                      deleteItem={this.deleteItem}/>
     )
   }
 
